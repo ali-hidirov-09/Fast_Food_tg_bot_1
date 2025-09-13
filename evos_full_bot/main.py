@@ -67,7 +67,8 @@ def location_handler(update, context):
     # 4) Foydalanuvchiga tasdiq
     update.message.reply_text(globals.BUYURTMA[db_user['lang_id']])
 
-    # 5) Adminlarga yuborish
+
+    # 5) Adminlarga yuborish 
     safe_first = html.escape(str(db_user.get('first_name','')))
     safe_last = html.escape(str(db_user.get('last_name','')))
     safe_phone = html.escape(str(db_user.get('phone_number','')))
@@ -89,7 +90,9 @@ def location_handler(update, context):
         except telegram.error.TelegramError:
             pass
 
-    # 6) Adminlarga lokatsiyani yuborish
+
+    # 6) Adminlarga lokatsiyani yuborish 
+
     if lat is not None and lon is not None:
         for admin in ADMIN_IDS:
             try:
@@ -97,7 +100,7 @@ def location_handler(update, context):
             except Exception:
                 pass
 
-    # 7) Tozalash va menyuga qaytarish
+    # 7) menyuga qaytarish
     context.user_data.pop("carts", None)
     methods.send_main_menu(context, update.message.from_user.id, db_user['lang_id'])
 
