@@ -70,7 +70,7 @@ def inline_handler(update, context):
                     product = db.get_product_by_id(int(data_sp[2]))
                     query.message.delete()
 
-                    caption = f"{globals.TEXT_PRODUCT_PRICE[db_user['lang_id']]} тенге" + str(product["price"]) + \
+                    caption = f"{globals.TEXT_PRODUCT_PRICE[db_user['lang_id']]} " + str(product["price"]) + "Tenge" + \
                               f"\n{globals.TEXT_PRODUCT_DESC[db_user['lang_id']]}" + \
                               product[f"description_{globals.LANGUAGE_CODE[db_user['lang_id']]}"]
 
