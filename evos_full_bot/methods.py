@@ -27,7 +27,6 @@ def send_main_menu(context, chat_id, lang_id, message_id=None):
             )
         )
 
-######### lesson-3 ############
 def send_category_buttons(categories, lang_id):
     buttons = []
     row = []

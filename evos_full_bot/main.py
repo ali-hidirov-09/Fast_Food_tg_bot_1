@@ -6,6 +6,8 @@ from messages import message_handler
 from inlines import inline_handler
 import globals
 from config import ADMIN_IDS, token
+import html
+import telegram
 
 Token=token
 
@@ -24,8 +26,6 @@ def contact_handler(update, context):
 
 
 
-import html
-import telegram
 def location_handler(update, context):
     db_user = db.get_user_by_chat_id(update.message.from_user.id)
     location = update.message.location
@@ -40,7 +40,6 @@ def location_handler(update, context):
         return
 
     # 2) DB ga buyurtma yozish
-    # Misol: db.create_order(user_id, carts, payment_type, latitude, longitude)
     lat = getattr(location, "latitude", None)
     lon = getattr(location, "longitude", None)
     # Agar create_order location obyektni qabul qilsa
@@ -68,7 +67,7 @@ def location_handler(update, context):
     # 4) Foydalanuvchiga tasdiq
     update.message.reply_text(globals.BUYURTMA[db_user['lang_id']])
 
-    # 5) Adminlarga yuborish — HTML ga moslab escape qilish
+    # 5) Adminlarga yuborish
     safe_first = html.escape(str(db_user.get('first_name','')))
     safe_last = html.escape(str(db_user.get('last_name','')))
     safe_phone = html.escape(str(db_user.get('phone_number','')))
@@ -88,10 +87,9 @@ def location_handler(update, context):
         try:
             context.bot.send_message(chat_id=admin, text=admin_msg, parse_mode='HTML')
         except telegram.error.TelegramError:
-            # log qiling yoki pass
             pass
 
-    # 6) Adminlarga lokatsiyani yuborish (agar kerak bo'lsa)
+    # 6) Adminlarga lokatsiyani yuborish
     if lat is not None and lon is not None:
         for admin in ADMIN_IDS:
             try:
@@ -103,60 +101,6 @@ def location_handler(update, context):
     context.user_data.pop("carts", None)
     methods.send_main_menu(context, update.message.from_user.id, db_user['lang_id'])
 
-
-
-
-
-# # lesson-4 #############
-# def location_handler(update, context):
-#     db_user = db.get_user_by_chat_id(update.message.from_user.id)
-#     location = update.message.location
-#     payment_type = context.user_data.get("payment_type", None)
-#     db.create_order(db_user['id'], context.user_data.get("carts", {}), payment_type, location)
-#
-#     if context.user_data.get("carts", {}):
-#         carts = context.user_data.get("carts")
-#         text = "\n"
-#         lang_code = globals.LANGUAGE_CODE[db_user['lang_id']]
-#         total_price = 0
-#         for cart, val in carts.items():
-#             product = db.get_product_for_cart(int(cart))
-#             text += f"{val} x {product[f'cat_name_{lang_code}']} {product[f'name_{lang_code}']}\n"
-#             total_price += product['price'] * val
-#
-#         payment_type = context.user_data.get("payment_type")
-#         if payment_type == 1:
-#             payment_text = "Naqd pul"
-#         elif payment_type == 2:
-#             payment_text = "Kaspi KZ"
-#         else:
-#             payment_text = "Noma'lum"
-#
-#         text += f"\n{globals.ALL[db_user['lang_id']]}: {total_price} {globals.SUM[db_user['lang_id']]}"
-#     update.message.reply_text(f"{globals.BUYURTMA[db_user['lang_id']]}")
-#     for admin in ADMIN_IDS:
-#         context.bot.send_message(
-#             chat_id=admin,
-#             text=f"<b>Янги буюртма:</b>\n\n"
-#                  f"👤 <b>Исм-фамилия:</b> {db_user['first_name']} {db_user['last_name']}\n"
-#                  f"📞 <b>Телефон рақам:</b> {db_user['phone_number']} \n"
-#                  f"   <b>Тили:</b> {globals.LANGUAGE_CODE[db_user['lang_id']]}\n"
-#                  f"💳 <b>Тўлов тури:</b> {payment_text}\n\n"
-#                  f"📥 <b>Буюртма:</b> \n"
-#                  f"{text}",
-#             parse_mode='HTML'
-#         )
-#         context.user_data.pop("carts", None)
-#
-#     for admin in ADMIN_IDS:
-#         context.bot.send_location(
-#             chat_id=admin,
-#             latitude=float(location.latitude),
-#             longitude=float(location.longitude)
-#         )
-#     methods.send_main_menu(context, update.message.from_user.id, db_user['lang_id'])
-# ########################
-#
 
 
 def main():

@@ -6,7 +6,6 @@ import globals
 
 db = Database("fast_food.db")
 
-# Lesson-4 ###############
 
 def inline_handler(update, context):
 
@@ -274,7 +273,6 @@ def inline_handler(update, context):
                 )
             )
 
-        # db.create_order(db_user['id'], context.user_data.get("carts", {}))
-        #
-################################
+        ### db.create_order(db_user['id'], context.user_data.get("carts", {}))
+
 

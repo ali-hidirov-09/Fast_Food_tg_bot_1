@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # .env faylini yuklaydi
+load_dotenv()
 
 token = os.getenv("TOKEN")
 DB_PATH = os.getenv("DB_PATH", "fast_food.db")
